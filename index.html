@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSA Instructor AI</title>
+    <style>
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            color: #1c1e21;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #0d1117;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        textarea {
+            width: 95%;
+            padding: 0.75rem;
+            border: 1px solid #dddfe2;
+            border-radius: 6px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            resize: vertical;
+        }
+
+        button {
+            background-color: #1877f2;
+            color: #ffffff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #166fe5;
+        }
+        
+        button:disabled {
+            background-color: #a0c3f0;
+            cursor: not-allowed;
+        }
+
+        #result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 6px;
+            background-color: #f7f7f7;
+            text-align: left;
+            white-space: pre-wrap; /* Preserves formatting of the response */
+            font-family: "Courier New", Courier, monospace;
+            min-height: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>DSA Instructor AI</h1>
+        <textarea id="userInput" rows="4" placeholder="Ask a question about Data Structures and Algorithms..."></textarea>
+        <br>
+        <button id="submitBtn" onclick="getAIResponse()">Ask the Instructor</button>
+        <h2>Response:</h2>
+        <div id="result">
+            
+        </div>
+    </div>
+
+    <script>
+        
+        async function getAIResponse() {
+            const userInput = document.getElementById('userInput').value;
+            const resultDiv = document.getElementById('result');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            
+            const GEMINI_API_KEY = "AIzaSyDueFAJuGNHF_0jFdvHyNJUq8ADuR7iroE";
+            
+            if (!userInput.trim()) {
+                resultDiv.textContent = "Please enter a question.";
+                return;
+            }
+
+            if (GEMINI_API_KEY === "YOUR_API_KEY") {
+                resultDiv.textContent = "Error: Please replace 'YOUR_API_KEY' with your actual Gemini API key in the script.";
+                return;
+            }
+            
+            
+            submitBtn.disabled = true;
+            resultDiv.textContent = "Thinking...";
+
+            const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+
+            const requestBody = {
+                "contents": [{
+                    "parts": [{
+                        "text": userInput
+                    }]
+                }],
+                "system_instruction": {
+                    "parts": [{
+                        "text": `You are a DSA(data structure and algorithm) Instructor. You will only answer to question related to data structure and algorithm. You have to solve query of user in simplest way. If user ask question that is not related to data structure and algorithm you dont need to ans it or you can tell him that if you have any querry related to data structure and algorithm then only i will answer. or you can reply rudely. example:if user ask,how are you you will reply: you just shut your mouth and go and study or ask some sensible question,like this you can reply anything more rudely else reply him politely in simplest way`
+                    }]
+                }
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}?key=${GEMINI_API_KEY}, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(requestBody)
+                }`);
+
+                if (!response.ok) {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+
+                const data = await response.json();
+                const aiText = data.candidates[0].content.parts[0].text;
+                resultDiv.textContent = aiText;
+
+            } catch (error) {
+                console.error("Error:", error);
+                resultDiv.textContent = "An error occurred. Please check the console for details.";
+            } finally {
+                
+                submitBtn.disabled = false;
+            }
+        }
+    </script>
+
+</body>
+</html>
