@@ -97,7 +97,7 @@
             const submitBtn = document.getElementById('submitBtn');
             
             
-            const GEMINI_API_KEY = "AIzaSyDueFAJuGNHF_0jFdvHyNJUq8ADuR7iroE";
+            const GEMINI_API_KEY = "AIzaSyC1-xoLjWdnqmymxjhM2mveeMacO2-hOos";
             
             if (!userInput.trim()) {
                 resultDiv.textContent = "Please enter a question.";
@@ -129,13 +129,13 @@
             };
             
             try {
-                const response = await fetch(`${API_URL}?key=${GEMINI_API_KEY}, {
+                const response = await fetch(`${API_URL}?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(requestBody)
-                }`);
+                });
 
                 if (!response.ok) {
                     throw new Error(`API request failed with status ${response.status}`);
@@ -156,4 +156,5 @@
     </script>
 
 </body>
+
 </html>
